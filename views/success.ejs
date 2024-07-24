@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+/* Add your CSS styles here */
+body {
+  margin: 0;
+  font-family: 'Jost', sans-serif;
+  background: linear-gradient(to top, #3dd3f5,  hsla(290, 79%, 67%, 0.961));
+  min-height: 100vh;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.topnav a {
+  float: left;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: transparent;
+  color: white;
+}
+
+.topnav a.split:hover {
+  background-color: transparent;
+  color: white;
+}
+
+/* Create a right-aligned (split) link inside the navigation bar */
+.topnav a.split {
+  float: right;
+  background-color: transparent;
+  color: black;
+}
+
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#myImg:hover {opacity: 0.7;}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 45px; /* Location of the box */
+  right:70px;
+  top: 65px;
+  max-width: 600px;
+  max-height: 800px;
+  overflow-y: auto;
+  background-color:transparent;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+/* Modal Content (image) */
+.modal-content {
+  padding: 20px;
+}
+
+/* The Close Button */
+.close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: #888;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Feedback Form Styles */
+.form-container {
+  padding: 20px;
+
+}
+
+.form-container textarea {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.form-container button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.form-container button:hover {
+  background-color: #45a049;
+}
+
+/* Clear floats after the form */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.download-btn {
+  background-color: transparent; /* Set background color to transparent */
+  border: none;
+  color: black; /* Change text color to black */
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease; /* Add transition effect for color change */
+}
+
+.download-btn:hover {
+  color: white; /* Change text color to white on hover */
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <h1>
+    <a class="active" href="http://localhost:3000/">Logout</a>
+    <a href="#about" class="split" onclick="openModal('aboutModal')">Hello 👤<%= registrationId %></a>
+    
+    <a href="#about" class="split" onclick="openModal('aboutModal')">About</a>
+  </h1>
+</div>
+
+<!-- About section -->
+<div id="aboutModal" class="modal" onclick="closeModal('aboutModal')">
+  <div class="modal-content" onclick="event.stopPropagation();">
+    <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+    <img src="about_proj.png" alt="Workplace" usemap="#workmap" width="400" height="550">
+  </div>
+</div>
+
+<!-- Feedback section -->
+
+
+<center>
+  <p>Here's your QR code:</p>
+  <img id="myImg" src="/qr-codes/<%= registrationId %>.png" alt="Scan This QR-Code" style="width:100%;max-width:300px">
+  <div id="myModal" class="modal">
+    <span class="close" onclick="closeModal('myModal')">&times;</span>
+    <img class="modal-content" id="img01">
+    <div id="caption"></div>
+  </div>
+  <br>
+  <button class="download-btn" onclick="downloadQR()">⬇️</button> <!-- Download arrow icon -->
+</center>
+
+<script>
+// Function to open modal
+function openModal(modalId) {
+  var modal = document.getElementById(modalId);
+  modal.style.display = "block";
+}
+
+// Function to close modal
+function closeModal(modalId) {
+  var modal = document.getElementById(modalId);
+  modal.style.display = "none";
+}
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+var img = document.getElementById("myImg");
+var modalImg = document.getElementById("img01");
+var captionText = document.getElementById("caption");
+img.onclick = function(){
+  openModal('myModal');
+  modalImg.src = this.src;
+  captionText.innerHTML = this.alt;
+}
+
+// Close the modal when clicked outside of it
+window.onclick = function(event) {
+  var modals = document.getElementsByClassName('modal');
+  for (var i = 0; i < modals.length; i++) {
+    var modal = modals[i];
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
+}
+
+  // Function to download the QR code
+  function downloadQR() {
+    var qrImageSrc = document.getElementById("myImg").src;
+    var a = document.createElement('a');
+    a.href = qrImageSrc;
+    a.download = 'QR_Code.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+
+</script>
+
+</body>
+</html>
